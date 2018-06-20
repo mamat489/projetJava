@@ -42,10 +42,18 @@ public class CplxPol implements Cplx {
 		this.module = moi.getModule();
 		this.argument = moi.getArgument();
 	}
+
+    public void soustrait(Cplx complexe) {
+        Cplx moi = new CplxCart(this.getReel(),this.getIm());
+        moi.soustrait(complexe);
+        this.module = moi.getModule();
+        this.argument = moi.getArgument();
+    }
+
 	
 	public void multiplication(Cplx complexe) {
 		this.module*= complexe.getModule();
-		this.argument *= complexe.getArgument();
+		this.argument += complexe.getArgument();
 	}
 
 	public String toString(){

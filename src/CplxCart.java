@@ -40,6 +40,11 @@ public class CplxCart implements Cplx  {
 		this.Reel += complexe.getReel();
 		this.Im += complexe.getIm();
 	}
+
+	public void soustrait(Cplx complexe) {
+		this.Reel -= complexe.getReel();
+		this.Im -= complexe.getIm();
+	}
 	
 	public void multiplication(Cplx complexe) {
 		double rtemp = this.getReel() * complexe.getReel() - this.getIm();

@@ -7,5 +7,6 @@ public interface Cplx {
 	public double getArgument();
 	public void ajoute(Cplx complexe);
 	public void multiplication(Cplx complexe);
+	public void soustrait(Cplx complexe);
 
 }
