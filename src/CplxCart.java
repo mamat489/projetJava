@@ -47,13 +47,13 @@ public class CplxCart implements Cplx  {
 	}
 	
 	public void multiplication(Cplx complexe) {
-		double rtemp = this.getReel() * complexe.getReel() - this.getIm();
+		double rtemp = this.getReel() * complexe.getReel() - this.getIm() * complexe.getIm();
 		this.Im=this.getReel()*complexe.getIm()+this.getIm()*complexe.getReel();
 		this.Reel=rtemp;
 	}
 
 	public String toString(){
-		return "Complexe cartesien : \n"+ "réel :" +this.getReel()+"\t partie immaginaire: "+getIm();
+		return "["+this.getReel()+" ; "+getIm()+"]";
 	}
 	
 	

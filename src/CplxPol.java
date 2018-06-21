@@ -57,7 +57,7 @@ public class CplxPol implements Cplx {
 	}
 
 	public String toString(){
-		return "Complexe polaire : \n"+ "module :" +this.getModule()+"\t partie argument: "+getArgument();
+		return this.getModule()+" * exp(i "+getArgument()+")";
 	}
 }
 
