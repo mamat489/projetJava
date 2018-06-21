@@ -1,13 +1,16 @@
+import com.sun.media.sound.FFT;
+
 public class exo1_recu2 {
 
     public static void main(String[] args) {
         exo1_recu2 test = new exo1_recu2();
         Cplx[] complexe = transformation();
-        complexe = signal(8);
+        complexe = signal(4);
         //complexe[1] = new CplxCart(1,0);
         test.afficheTableau(complexe);
         //test.afficheTableau(complexe);
-        test.FFT(complexe);
+        //test.FFT(complexe,false);
+        test.FFT_inv(test.FFT(complexe));
     }
 
     public static Cplx[] signal(int n)
@@ -98,7 +101,9 @@ public class exo1_recu2 {
             for(int k=0;k<(S.length/2);k++){
 
 
-                M=omega(k,S.length);//Faire Omega
+                    M=omega(k,S.length);//Faire Omega
+
+
                 //M=omega(0,S.length);
                 //System.out.println("M:"+M);
 
@@ -120,18 +125,91 @@ public class exo1_recu2 {
                 tabsortie[k+(S.length)/2]=P0[k];//new CplxPol(temp2.getModule(),temp2.getArgument());
                 //S[k+S.length/2]=P0[k]-P1[k]*M;
             }
-            afficheTableau(tabsortie);
+            //afficheTableau(tabsortie);
             return tabsortie;
 
         }
-
-
     }
+
+
+    public Cplx[] FFT_inv(Cplx[] S){
+        Cplx[] tabsortie=new Cplx[S.length];
+
+        if (S.length<=1){
+
+            tabsortie[0]= new CplxCart(S[0].getReel(), S[0].getIm());
+            return tabsortie;
+        }
+        else{
+            Cplx[] P0=new Cplx[S.length/2];
+            Cplx[] P1=new Cplx[S.length/2];
+            Cplx M;//new CplxPol(0,0);
+
+            for (int i = 0; i < S.length ; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    P0[i/2] = S[i];
+                }
+                else
+                {
+                    P1[(i - 1) / 2] = S[i];
+                }
+            }
+
+
+            P0=FFT_inv(P0);//pair
+            P1=FFT_inv(P1);//impaire
+
+
+            for(int k=0;k<(S.length/2);k++){
+
+
+                    M=omega(-k,S.length);//Faire Omega avec conj
+
+
+                //M=omega(0,S.length);
+                //System.out.println("M:"+M);
+
+
+                Cplx temp1= new CplxCart(P1[k].getReel(),P1[k].getIm());
+                //P1[k];
+                temp1.multiplication(M);
+                System.out.println("temp1 = "+temp1+", P0 = "+P0[k]);
+                temp1.ajoute(P0[k]);
+                tabsortie[k]= temp1;//new CplxPol(temp1.getModule(),temp1.getArgument());
+                //S[k]=P0[k]+P1[k]*M;
+
+                /*Cplx temp2=P1[k];
+                temp2.multiplication(M);
+                temp2.soustrait(P0[k]);*/
+
+                P1[k].multiplication(M);
+                P0[k].soustrait(P1[k]);
+                tabsortie[k+(S.length)/2]=P0[k];//new CplxPol(temp2.getModule(),temp2.getArgument());
+                //S[k+S.length/2]=P0[k]-P1[k]*M;
+            }
+
+            Cplx[] tabnorm=new Cplx[S.length];
+
+            System.arraycopy( tabsortie, 0, tabnorm, 0, tabsortie.length );
+
+            for (int i=0;i<tabnorm.length;++i){
+                tabnorm[i].multiplication(new CplxCart(1/tabnorm.length,0));
+            }
+
+            afficheTableau(tabnorm);
+            return tabnorm;
+
+        }
+    }
+
+
 
     public Cplx omega(int k,int L){
         Cplx complexe;
         complexe = new CplxPol(1, -2*Math.PI*k/L);
-        System.out.println("k"+k+" = "+new CplxCart(complexe.getReel(), complexe.getIm()));
+        //System.out.println("k"+k+" = "+new CplxCart(complexe.getReel(), complexe.getIm()));
         return complexe;
     }
 

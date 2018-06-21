@@ -29,7 +29,10 @@ public class Projet_java {
         
         //1 on fait la fft sur les membres
       
-       TFD tab1= new TFD(4); 
+       TFD tab1= new TFD(4);
+
+       System.out.println(tab1);
+
        argu = tab1.Diviser_tab(argu);
        
        

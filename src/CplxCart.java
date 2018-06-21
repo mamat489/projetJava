@@ -55,7 +55,5 @@ public class CplxCart implements Cplx  {
 	public String toString(){
 		return "["+this.getReel()+" ; "+getIm()+"]";
 	}
-	
-	
 
 }
