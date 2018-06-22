@@ -4,13 +4,27 @@ public class exo1_recu2 {
 
     public static void main(String[] args) {
         exo1_recu2 test = new exo1_recu2();
-        Cplx[] complexe = transformation();
+        Cplx[][] matrice = matrice(4);
+        test.afficheMatrice(matrice);
+
+        //matrice=test.normaliser2D(test.FFT_2D_inv(test.zero_padding((test.FFT_2D(matrice)))));
+        matrice=test.zero_padding((test.FFT_2D(matrice)));
+        //test.afficheMatrice(matrice);
+
+        /*Cplx[][] matriceTranspose = test.transpose(matrice);
+        test.afficheMatrice(matriceTranspose);*/
+
+
+        /*Cplx[] complexe = transformation();
         complexe = signal(4);
         //complexe[1] = new CplxCart(1,0);
         test.afficheTableau(complexe);
         //test.afficheTableau(complexe);
         //test.FFT(complexe,false);
-        test.FFT_inv(test.FFT(complexe));
+        test.normalise(test.FFT_inv(test.FFT(complexe)));
+
+        Cplx [][] complexe2D =matrice(2);*/
+
     }
 
     public static Cplx[] signal(int n)
@@ -111,7 +125,7 @@ public class exo1_recu2 {
                 Cplx temp1= new CplxCart(P1[k].getReel(),P1[k].getIm());
                         //P1[k];
                 temp1.multiplication(M);
-                System.out.println("temp1 = "+temp1+", P0 = "+P0[k]);
+                //System.out.println("temp1 = "+temp1+", P0 = "+P0[k]);
                 temp1.ajoute(P0[k]);
                 tabsortie[k]= temp1;//new CplxPol(temp1.getModule(),temp1.getArgument());
                 //S[k]=P0[k]+P1[k]*M;
@@ -194,14 +208,35 @@ public class exo1_recu2 {
 
             System.arraycopy( tabsortie, 0, tabnorm, 0, tabsortie.length );
 
-            for (int i=0;i<tabnorm.length;++i){
-                tabnorm[i].multiplication(new CplxCart(1/tabnorm.length,0));
-            }
+            /*for (int i=0;i<tabnorm.length;++i){
+                tabnorm[i].multiplication(new CplxCart(1/(double)tabnorm.length,0));
+            }*/
 
             afficheTableau(tabnorm);
             return tabnorm;
-
         }
+    }
+
+    public Cplx[] normalise (Cplx[] tabnorm){
+        for (int i=0;i<tabnorm.length;++i){
+            tabnorm[i].multiplication(new CplxCart(1/(double)tabnorm.length,0));
+        }
+        afficheTableau(tabnorm);
+        return tabnorm;
+    }
+
+    public Cplx[][] normaliser2D(Cplx[][] tab){
+        System.out.println("longueurN:"+(tab.length));
+        CplxCart var=new CplxCart((1/(double)(tab.length*tab[0].length)),0.0);
+        System.out.println("var:"+var);
+        for (int i=0; i<tab.length; i++){
+            for(int j=0; j<tab[i].length; j++){
+                tab[i][j].multiplication(var);
+
+            }
+        }
+        return tab;
+
     }
 
 
@@ -211,6 +246,120 @@ public class exo1_recu2 {
         complexe = new CplxPol(1, -2*Math.PI*k/L);
         //System.out.println("k"+k+" = "+new CplxCart(complexe.getReel(), complexe.getIm()));
         return complexe;
+    }
+
+    public void afficheMatrice(Cplx[][] complexe){
+        System.out.println("fct afficheMatrice");
+        for(int i=0;i<complexe.length;i++){
+            for(int j=0;j<complexe[i].length;j++){
+                //System.out.println("complexe["+i+"]:"+complexe[i].toString());
+                System.out.print(new CplxCart((int)complexe[i][j].getReel(), (int)complexe[i][j].getIm()));
+                System.out.print("            ");
+            }
+            System.out.println();
+        }
+        System.out.println("fin fct afficheMatrice");
+
+    }
+
+    public static Cplx[][] matrice(int n){
+        Cplx[][] data = new CplxCart[n][n];
+        for (int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                data[i][j]=new CplxCart(i+2*j,0);
+            }
+        }
+        return data;
+    }
+
+
+    public Cplx[][] FFT_2D(Cplx S [][]){
+        Cplx [][] matricecopie = new Cplx[S.length][S[0].length];
+        Cplx [][] matricefinale = new Cplx[S.length][S[0].length];
+
+        System.arraycopy(S, 0, matricecopie, 0, S.length );
+        Cplx [][] matricesortie= new Cplx[S.length][S[0].length];
+        for(int k=0;k<S.length;++k){
+            matricesortie[k]=FFT(matricecopie[k]);
+        }
+        matricesortie=transpose(matricesortie);
+        for(int k=0;k<S.length;++k){
+            matricefinale[k]=FFT(matricesortie[k]);
+        }
+        matricefinale=transpose(matricefinale);
+        return matricefinale;
+    }
+
+    public Cplx[][] FFT_2D_inv(Cplx S [][]){
+        Cplx [][] matricecopie = new Cplx[S.length][S[0].length];
+        Cplx [][] matricefinale = new Cplx[S.length][S[0].length];
+
+        System.arraycopy(S, 0, matricecopie, 0, S.length );
+        Cplx [][] matricesortie= new Cplx[S.length][S[0].length];
+        for(int k=0;k<S.length;++k){
+            matricesortie[k]=FFT_inv(matricecopie[k]);
+        }
+        matricesortie=transpose(matricesortie);
+        for(int k=0;k<S.length;++k){
+            matricefinale[k]=FFT_inv(matricesortie[k]);
+        }
+        matricefinale=transpose(matricefinale);
+        return matricefinale;
+    }
+
+
+    public static Cplx[][] transpose(Cplx[][] M) {
+        Cplx[][] tmp=new CplxCart[M.length][M.length];
+        Cplx [][] matricecopie = new Cplx[M.length][M[0].length];
+        System.arraycopy(M, 0, matricecopie, 0, M.length );
+
+        for (int i=0; i<M.length; i++){
+            for (int j=0; j<M[i].length; j++){
+                tmp[i][j]=matricecopie[j][i];
+            }
+        }
+        return tmp;
+    }
+
+    public Cplx[][] zero_padding(Cplx[][] M){
+        float n = M.length*2;
+
+        Cplx[][] S=new CplxCart[(int)n][(int)n];
+        for (int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                S[i][j]=new CplxCart(0,0);
+            }
+        }
+        double decalage = (3.0/4)*S.length;
+        int decalageint = (3/4)*S.length;
+        System.out.println("deca float: "+decalage+" deca int: "+decalageint);
+
+
+        for(int i=0;i<M.length;i++){
+            for (int j=0;j<M[0].length;j++){
+                if ((i<M.length/2) && (j<M[0].length/2)){ //en haut a gauche
+                    //S[i][j]=M[i][j];
+                    S[i][j]=new CplxCart(800,800);
+                }
+                else if ((i>M.length/2) && (j<M[0].length/2)){ // en bas a gauche
+                    //S[(i-M.length/2)+(3/4)*S.length][j]=M[i][j];
+                    S[(int)((i-M.length/2)+decalage)][j]=new CplxCart(900,900);
+                }
+
+                else if ((i<M.length/2) && (j>M[0].length/2)){ // en haut a droite
+                    //S[i][(j-M[0].length/2)+(3/4)*S[0].length]=M[i][j];
+                    S[i][(int)((j-M[0].length/2)+decalage)]=new CplxCart(500,500);
+                }
+
+                else if ((i>M.length/2) && (j>M[0].length/2)){ // en bas a droite
+                    //S[(i-M.length/2)+(3/4)*S.length][(j-M[0].length/2)+(3/4)*S[0].length]=M[i][j];
+                    S[(int)((i-M.length/2)+decalage)][(int)((j-M[0].length/2)+decalage)]=new CplxCart(200,200);
+                }
+                else {S[i][(int)((j-M[0].length/2)+decalage-1)]=new CplxCart(44,44);};
+            }
+        }
+        afficheMatrice(S);
+        return S;
     }
 
 }
