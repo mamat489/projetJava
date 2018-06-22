@@ -4,12 +4,12 @@ public class exo1_recu2 {
 
     public static void main(String[] args) {
         exo1_recu2 test = new exo1_recu2();
-        Cplx[][] matrice = matrice(4);
+        Cplx[][] matrice = matrice(2);
         test.afficheMatrice(matrice);
 
-        //matrice=test.normaliser2D(test.FFT_2D_inv(test.zero_padding((test.FFT_2D(matrice)))));
-        matrice=test.zero_padding((test.FFT_2D(matrice)));
-        //test.afficheMatrice(matrice);
+        matrice=test.normaliser2D(test.FFT_2D_inv(test.zero_padding((test.FFT_2D(matrice)))));
+        //matrice=test.zero_padding((test.FFT_2D(matrice)));
+        test.afficheMatrice(matrice);
 
         /*Cplx[][] matriceTranspose = test.transpose(matrice);
         test.afficheMatrice(matriceTranspose);*/
@@ -254,7 +254,7 @@ public class exo1_recu2 {
             for(int j=0;j<complexe[i].length;j++){
                 //System.out.println("complexe["+i+"]:"+complexe[i].toString());
                 System.out.print(new CplxCart((int)complexe[i][j].getReel(), (int)complexe[i][j].getIm()));
-                System.out.print("            ");
+                System.out.print(" ");
             }
             System.out.println();
         }
@@ -338,27 +338,27 @@ public class exo1_recu2 {
         for(int i=0;i<M.length;i++){
             for (int j=0;j<M[0].length;j++){
                 if ((i<M.length/2) && (j<M[0].length/2)){ //en haut a gauche
-                    //S[i][j]=M[i][j];
-                    S[i][j]=new CplxCart(800,800);
+                    S[i][j]=M[i][j];
+                    //S[i][j]=new CplxCart(800,800);
                 }
-                else if ((i>M.length/2) && (j<M[0].length/2)){ // en bas a gauche
-                    //S[(i-M.length/2)+(3/4)*S.length][j]=M[i][j];
-                    S[(int)((i-M.length/2)+decalage)][j]=new CplxCart(900,900);
-                }
-
-                else if ((i<M.length/2) && (j>M[0].length/2)){ // en haut a droite
-                    //S[i][(j-M[0].length/2)+(3/4)*S[0].length]=M[i][j];
-                    S[i][(int)((j-M[0].length/2)+decalage)]=new CplxCart(500,500);
+                else if ((i>=M.length/2) && (j<M[0].length/2)){ // en bas a gauche
+                    S[(int)(i+S.length/2)][j]=M[i][j];
+                    //S[(int)(i+S.length/2)][j]=new CplxCart(900,900);
                 }
 
-                else if ((i>M.length/2) && (j>M[0].length/2)){ // en bas a droite
-                    //S[(i-M.length/2)+(3/4)*S.length][(j-M[0].length/2)+(3/4)*S[0].length]=M[i][j];
-                    S[(int)((i-M.length/2)+decalage)][(int)((j-M[0].length/2)+decalage)]=new CplxCart(200,200);
+                else if ((i<M.length/2) && (j>=M[0].length/2)){ // en haut a droite
+                    S[i][(int)(j+S.length/2)]=M[i][j];
+                    //S[i][(int)(j+S.length/2)]=new CplxCart(500,500);
                 }
-                else {S[i][(int)((j-M[0].length/2)+decalage-1)]=new CplxCart(44,44);};
+
+                else if ((i>=M.length/2) && (j>=M[0].length/2)){ // en bas a droite
+                    S[(int)(i+S.length/2)][(int)(j+S.length/2)]=M[i][j];
+                    //S[(int)(i+S.length/2)][(int)(j+S.length/2)]=new CplxCart(200,200);
+                }
+                //else {S[i][(int)((j-M[0].length/2)+decalage-1)]=new CplxCart(44,44);};
             }
         }
-        afficheMatrice(S);
+        //afficheMatrice(S);
         return S;
     }
 
